@@ -1,5 +1,43 @@
 # PASC_PentaByte_Project
 PASC_PentaByte_Project hackathon project for team PentaByte.
 trial update
-update 2 3 4 5
+update 2 3 4
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FocusFlow</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>FocusFlow ⏳</h1>
+
+    <!-- Timer -->
+    <div class="timer">
+      <span id="time">25:00</span>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <!-- Task Input -->
+    <div class="task-section">
+      <h2>Tasks</h2>
+      <input type="text" id="taskInput" placeholder="Enter task...">
+      <button onclick="addTask()">Add</button>
+      <ul id="taskList"></ul>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
 
