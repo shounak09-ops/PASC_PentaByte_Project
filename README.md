@@ -1,43 +1,20 @@
 # PASC_PentaByte_Project
 PASC_PentaByte_Project hackathon project for team PentaByte.
-trial update
-update 2 3 4
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>FocusFlow</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+# ⏳ FocusFlow – Smart Pomodoro Productivity System
 
-  <div class="container">
-    <h1>FocusFlow ⏳</h1>
+FocusFlow is an intelligent Pomodoro-based productivity web application that combines **task management, time tracking, and data-driven insights** into a single platform.
 
-    <!-- Timer -->
-    <div class="timer">
-      <span id="time">25:00</span>
-    </div>
+Unlike traditional timers, FocusFlow allows users to create tasks with **custom work and break durations**, set **priorities and deadlines**, and manage their workflow more effectively. The built-in **“Get Plan”** feature analyzes tasks and generates an optimized execution order based on priority, deadlines, and estimated effort, helping users decide what to work on next.
 
-    <!-- Buttons -->
-    <div class="buttons">
-      <button onclick="startTimer()">Start</button>
-      <button onclick="pauseTimer()">Pause</button>
-      <button onclick="resetTimer()">Reset</button>
-    </div>
+The application also includes a **smart assistant** that suggests tasks, calculates a productivity score, and provides daily advice to improve consistency and efficiency. All activity is tracked and stored locally, enabling users to monitor their progress over time.
 
-    <!-- Task Input -->
-    <div class="task-section">
-      <h2>Tasks</h2>
-      <input type="text" id="taskInput" placeholder="Enter task...">
-      <button onclick="addTask()">Add</button>
-      <ul id="taskList"></ul>
-    </div>
+To enhance usability, FocusFlow provides **visual analytics using charts**, displaying focus time and completed tasks to give users a clear understanding of their productivity patterns.
 
-  </div>
+Built using HTML, CSS, JavaScript, and Chart.js, FocusFlow goes beyond a basic timer and acts as a **decision-support system** that helps users plan, prioritize, and optimize their work effectively.
 
-  <script src="script.js"></script>
-</body>
-</html>
+
+
+
+
 
