@@ -31,16 +31,24 @@
     <input type="number" id="workTimeInput" placeholder="Work min">
     <input type="number" id="breakTimeInput" placeholder="Break min">
 
-    <!-- PRIORITY -->
     <select id="priorityInput">
-      <option value="High">High Priority</option>
-      <option value="Medium" selected>Medium Priority</option>
-      <option value="Low">Low Priority</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
     </select>
 
+    <input type="date" id="deadlineInput">
+
     <button onclick="addTask()">Add Task</button>
+    <button onclick="generatePlan()">Get Plan 🧠</button>
 
     <ul id="taskList"></ul>
+  </div>
+
+  <!-- PLAN OUTPUT -->
+  <div class="plan">
+    <h2>Today's Plan</h2>
+    <ul id="planList"></ul>
   </div>
 
   <!-- STATS -->
@@ -50,18 +58,19 @@
     <p>Tasks Done: <span id="tasksDone">0</span></p>
   </div>
 
+  <!-- AI SECTION -->
+  <div class="ai-section">
+    <h2>Smart Assistant 🤖</h2>
+    <p id="suggestion">Suggested: None</p>
+    <p>Productivity Score: <span id="score">0%</span></p>
+    <p id="advice"></p>
+  </div>
+
   <!-- CHARTS -->
   <div class="charts">
     <h2>Charts</h2>
     <canvas id="focusChart"></canvas>
     <canvas id="taskChart"></canvas>
-  </div>
-
-  <!-- SMART SUGGESTION -->
-  <div class="ai-section">
-    <h2>Smart Suggestions 🤖</h2>
-    <button onclick="getSuggestion()">Get Plan</button>
-    <p id="aiOutput">Click to generate smart plan...</p>
   </div>
 
 </div>

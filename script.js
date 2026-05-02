@@ -6,18 +6,15 @@ let time = 0;
 let isRunning = false;
 let isWorkMode = true;
 
-// Stats
 let totalFocus = parseInt(localStorage.getItem("focus")) || 0;
 let tasksDone = parseInt(localStorage.getItem("tasksDone")) || 0;
 
-// Chart
-let focusChart;
+let focusChart, taskChart;
 
 // DISPLAY
 function updateDisplay() {
   let m = Math.floor(time / 60);
   let s = time % 60;
-
   document.getElementById("time").innerText =
     `${m}:${s < 10 ? '0' : ''}${s}`;
 }
@@ -44,7 +41,6 @@ function startTimer() {
   }
 
   if (isRunning) return;
-
   isRunning = true;
 
   timer = setInterval(() => {
@@ -59,7 +55,7 @@ function startTimer() {
 
       if (isWorkMode) {
         totalFocus += task.work;
-        localStorage.setItem("focus", totalFocus);
+        logSession(task.text);
 
         alert("Work done! Break time.");
         isWorkMode = false;
@@ -70,6 +66,7 @@ function startTimer() {
         time = task.work * 60;
       }
 
+      localStorage.setItem("focus", totalFocus);
       updateStats();
       updateDisplay();
     }
@@ -99,6 +96,7 @@ function addTask() {
   let work = document.getElementById("workTimeInput").value;
   let brk = document.getElementById("breakTimeInput").value;
   let priority = document.getElementById("priorityInput").value;
+  let deadline = document.getElementById("deadlineInput").value;
 
   if (!text || !work || !brk) return;
 
@@ -107,15 +105,13 @@ function addTask() {
     work: parseInt(work),
     break: parseInt(brk),
     priority,
+    deadline,
     done: false
   });
 
   saveTasks();
   renderTasks();
-
-  document.getElementById("taskInput").value = "";
-  document.getElementById("workTimeInput").value = "";
-  document.getElementById("breakTimeInput").value = "";
+  showSuggestion();
 }
 
 // RENDER TASKS
@@ -128,7 +124,7 @@ function renderTasks() {
 
     li.innerHTML = `
       <span class="${t.done ? 'done' : ''}">
-        ${t.text} [${t.priority}] (Work: ${t.work}m)
+        ${t.text} (${t.work}m/${t.break}m)
       </span>
       <button onclick="selectTask(${index})">▶</button>
       <button onclick="toggleTask(${index})">✔</button>
@@ -139,7 +135,7 @@ function renderTasks() {
   });
 }
 
-// TOGGLE TASK
+// COMPLETE TASK
 function toggleTask(index) {
   tasks[index].done = !tasks[index].done;
 
@@ -151,6 +147,7 @@ function toggleTask(index) {
   saveTasks();
   renderTasks();
   updateStats();
+  showSuggestion();
 }
 
 // DELETE TASK
@@ -158,82 +155,129 @@ function deleteTask(index) {
   tasks.splice(index, 1);
   saveTasks();
   renderTasks();
+  showSuggestion();
 }
 
-// SAVE
+// PLAN GENERATION 🔥
+function generatePlan() {
+  let planList = document.getElementById("planList");
+  planList.innerHTML = "";
+
+  let pending = tasks.filter(t => !t.done);
+
+  let priorityOrder = { High: 3, Medium: 2, Low: 1 };
+
+  pending.sort((a, b) => {
+    if (priorityOrder[b.priority] !== priorityOrder[a.priority]) {
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    }
+
+    if (a.deadline && b.deadline) {
+      return new Date(a.deadline) - new Date(b.deadline);
+    }
+
+    return a.work - b.work;
+  });
+
+  pending.forEach(t => {
+    let li = document.createElement("li");
+    li.innerText = `${t.text} (${t.priority})`;
+    planList.appendChild(li);
+  });
+}
+
+// SUGGESTION
+function showSuggestion() {
+  let pending = tasks.filter(t => !t.done);
+
+  if (pending.length === 0) {
+    document.getElementById("suggestion").innerText =
+      "Suggested: No tasks";
+    return;
+  }
+
+  document.getElementById("suggestion").innerText =
+    `Suggested: ${pending[0].text}`;
+}
+
+// PRODUCTIVITY
+function getProductivityScore() {
+  let score = (tasksDone * 10) + (totalFocus / 5);
+  return Math.min(100, Math.floor(score));
+}
+
+function dailyAdvice() {
+  if (totalFocus < 30) return "Start small.";
+  if (totalFocus > 120) return "Take breaks.";
+  return "Good progress!";
+}
+
+// LOGS
+function logSession(taskName) {
+  let logs = JSON.parse(localStorage.getItem("logs")) || [];
+  logs.push({ task: taskName, time: new Date().toLocaleTimeString() });
+  localStorage.setItem("logs", JSON.stringify(logs));
+}
+
+// STATS
+function updateStats() {
+  document.getElementById("focusTime").innerText = totalFocus;
+  document.getElementById("tasksDone").innerText = tasksDone;
+
+  document.getElementById("score").innerText =
+    getProductivityScore() + "%";
+
+  document.getElementById("advice").innerText =
+    dailyAdvice();
+
+  saveDailyData();
+  loadCharts();
+}
+
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// UPDATE STATS
-function updateStats() {
-  document.getElementById("focusTime").innerText = totalFocus;
-  document.getElementById("tasksDone").innerText = tasksDone;
-  loadChart();
+// CHARTS
+function getToday() {
+  return new Date().toLocaleDateString();
 }
 
-// ✅ FIXED SMART SUGGESTION (PRIORITY + TIME)
-function getSuggestion() {
-  let outputBox = document.getElementById("aiOutput");
+function saveDailyData() {
+  let today = getToday();
 
-  if (tasks.length === 0) {
-    outputBox.innerText = "Add tasks first!";
-    return;
-  }
+  let focusData = JSON.parse(localStorage.getItem("dailyFocus")) || {};
+  let taskData = JSON.parse(localStorage.getItem("dailyTasks")) || {};
 
-  let pending = tasks.filter(t => !t.done);
+  focusData[today] = totalFocus;
+  taskData[today] = tasksDone;
 
-  if (pending.length === 0) {
-    outputBox.innerText = "All tasks completed 🎉";
-    return;
-  }
-
-  let priorityMap = { High: 3, Medium: 2, Low: 1 };
-
-  // 🔥 FIXED SORT (single combined logic)
-  pending.sort((a, b) => {
-    let priorityDiff = priorityMap[b.priority] - priorityMap[a.priority];
-
-    if (priorityDiff !== 0) {
-      return priorityDiff; // Higher priority first
-    }
-
-    return a.work - b.work; // If same priority → shorter task first
-  });
-
-  let next = pending[0];
-
-  let efficiency = totalFocus / (tasksDone || 1);
-
-  let suggestion = `👉 Start "${next.text}" for ${next.work} minutes.\n`;
-
-  if (next.work > 50) {
-    suggestion += "⚡ Break into smaller sessions.\n";
-  }
-
-  if (efficiency < 20) {
-    suggestion += "💡 Try shorter focus sessions.\n";
-  } else {
-    suggestion += "🔥 Try deep focus session.\n";
-  }
-
-  suggestion += "🚀 Stay consistent!";
-
-  document.getElementById("aiOutput").innerText = suggestion;
+  localStorage.setItem("dailyFocus", JSON.stringify(focusData));
+  localStorage.setItem("dailyTasks", JSON.stringify(taskData));
 }
 
-// CHART
-function loadChart() {
+function loadCharts() {
+  let focusData = JSON.parse(localStorage.getItem("dailyFocus")) || {};
+  let taskData = JSON.parse(localStorage.getItem("dailyTasks")) || {};
+
+  let labels = Object.keys(focusData);
+
   if (focusChart) focusChart.destroy();
+  if (taskChart) taskChart.destroy();
 
   focusChart = new Chart(document.getElementById("focusChart"), {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{ label: "Focus Time", data: Object.values(focusData) }]
+    }
+  });
+
+  taskChart = new Chart(document.getElementById("taskChart"), {
     type: "bar",
     data: {
-      labels: ["Focus Time", "Tasks Done"],
-      datasets: [{
-        label: "Your Productivity",
-        data: [totalFocus, tasksDone]
-      }]
+      labels,
+      datasets: [{ label: "Tasks Done", data: Object.values(taskData) }]
     }
   });
 }
@@ -242,3 +286,5 @@ function loadChart() {
 updateDisplay();
 renderTasks();
 updateStats();
+showSuggestion();
+loadCharts();

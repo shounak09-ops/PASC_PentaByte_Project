@@ -57,18 +57,3 @@ canvas {
   padding: 10px;
   border-radius: 10px;
 }
-
-/* AI SECTION */
-.ai-section {
-  margin-top: 30px;
-  padding: 15px;
-  background: #1e1e1e;
-  border-radius: 10px;
-}
-
-#aiOutput {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #00ffcc;
-  white-space: pre-line;
-}
