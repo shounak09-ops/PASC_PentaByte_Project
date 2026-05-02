@@ -1,36 +1,36 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: #121212;
   color: white;
   text-align: center;
 }
 
 .container {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 .timer {
   font-size: 60px;
-  margin: 20px 0;
+  margin: 20px;
 }
 
 button {
-  margin: 10px;
-  padding: 10px 20px;
+  margin: 6px;
+  padding: 10px 15px;
   border: none;
   background: #00adb5;
   color: white;
-  cursor: pointer;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 button:hover {
   background: #007f86;
 }
 
-input {
-  padding: 10px;
-  width: 200px;
+input, select {
+  padding: 8px;
+  margin: 5px;
 }
 
 ul {
@@ -39,8 +39,36 @@ ul {
 }
 
 li {
-  margin: 10px;
   background: #1e1e1e;
+  margin: 10px;
   padding: 10px;
   border-radius: 5px;
+}
+
+.done {
+  text-decoration: line-through;
+  color: gray;
+}
+
+canvas {
+  max-width: 500px;
+  margin: 20px auto;
+  background: #1e1e1e;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* AI SECTION */
+.ai-section {
+  margin-top: 30px;
+  padding: 15px;
+  background: #1e1e1e;
+  border-radius: 10px;
+}
+
+#aiOutput {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #00ffcc;
+  white-space: pre-line;
 }

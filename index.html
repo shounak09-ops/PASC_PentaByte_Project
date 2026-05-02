@@ -4,34 +4,68 @@
   <meta charset="UTF-8">
   <title>FocusFlow</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <div class="container">
-    <h1>FocusFlow ⏳</h1>
+<div class="container">
+  <h1>FocusFlow ⏳</h1>
 
-    <!-- Timer -->
-    <div class="timer">
-      <span id="time">25:00</span>
-    </div>
+  <h2 id="mode">No Task Selected</h2>
 
-    <!-- Buttons -->
-    <div class="buttons">
-      <button onclick="startTimer()">Start</button>
-      <button onclick="pauseTimer()">Pause</button>
-      <button onclick="resetTimer()">Reset</button>
-    </div>
-
-    <!-- Task Input -->
-    <div class="task-section">
-      <h2>Tasks</h2>
-      <input type="text" id="taskInput" placeholder="Enter task...">
-      <button onclick="addTask()">Add</button>
-      <ul id="taskList"></ul>
-    </div>
-
+  <div class="timer">
+    <span id="time">00:00</span>
   </div>
 
-  <script src="script.js"></script>
+  <div class="buttons">
+    <button onclick="startTimer()">Start</button>
+    <button onclick="pauseTimer()">Pause</button>
+    <button onclick="resetTimer()">Reset</button>
+  </div>
+
+  <!-- TASK INPUT -->
+  <div class="task-section">
+    <h2>Add Task</h2>
+
+    <input type="text" id="taskInput" placeholder="Task name">
+    <input type="number" id="workTimeInput" placeholder="Work min">
+    <input type="number" id="breakTimeInput" placeholder="Break min">
+
+    <!-- PRIORITY -->
+    <select id="priorityInput">
+      <option value="High">High Priority</option>
+      <option value="Medium" selected>Medium Priority</option>
+      <option value="Low">Low Priority</option>
+    </select>
+
+    <button onclick="addTask()">Add Task</button>
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <h2>Stats</h2>
+    <p>Focus Time: <span id="focusTime">0</span> min</p>
+    <p>Tasks Done: <span id="tasksDone">0</span></p>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts">
+    <h2>Charts</h2>
+    <canvas id="focusChart"></canvas>
+    <canvas id="taskChart"></canvas>
+  </div>
+
+  <!-- SMART SUGGESTION -->
+  <div class="ai-section">
+    <h2>Smart Suggestions 🤖</h2>
+    <button onclick="getSuggestion()">Get Plan</button>
+    <p id="aiOutput">Click to generate smart plan...</p>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
